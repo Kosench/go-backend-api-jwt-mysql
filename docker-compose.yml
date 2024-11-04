@@ -1,0 +1,13 @@
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mypassword
+      MYSQL_DATABASE: ecom
+      MYSQL_USER: myuser       # Замените myuser на желаемое имя пользователя
+      MYSQL_PASSWORD: mypassword # Задайте пароль для нового пользователя
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
