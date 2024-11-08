@@ -5,8 +5,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: mypassword
       MYSQL_DATABASE: ecom
-      MYSQL_USER: myuser       # Замените myuser на желаемое имя пользователя
-      MYSQL_PASSWORD: mypassword # Задайте пароль для нового пользователя
+      MYSQL_USER: myuser       
+      MYSQL_PASSWORD: mypassword 
     ports:
       - "3306:3306"
     volumes:
