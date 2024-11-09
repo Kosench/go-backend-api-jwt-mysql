@@ -17,3 +17,6 @@ run: build
 
 clean:
 	rm -rf $(BIN_DIR)/*
+
+test:
+	@go test -v ./...
