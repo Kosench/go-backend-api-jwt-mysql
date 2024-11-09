@@ -3,6 +3,7 @@ package user
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"go-backend-api-jwt-mysql/service/auth"
 	"go-backend-api-jwt-mysql/types"
 	"go-backend-api-jwt-mysql/utils"
 	"net/http"
@@ -38,13 +39,16 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("user with email %s already exists"))
 		return
 	}
-
+	hashedPassword, err := auth.HashPassword(payload.Password)
+	if err != nil {
+		utils.WriteError(r, http.StatusInternalServerError, err)
+	}
 	//if it doesnt we createthe new user
 	err = h.store.CreateUser(types.User{
 		FirstName: payload.FirstName,
 		LastName:  payload.LastName,
 		Email:     payload.Email,
-		Password:  payload.Password,
+		Password:  hashedPassword,
 	})
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
