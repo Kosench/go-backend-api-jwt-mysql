@@ -41,9 +41,9 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 	hashedPassword, err := auth.HashPassword(payload.Password)
 	if err != nil {
-		utils.WriteError(r, http.StatusInternalServerError, err)
+		utils.WriteError(w, http.StatusInternalServerError, err)
 	}
-	//if it doesnt we createthe new user
+	//if it doesn't we createthe new user
 	err = h.store.CreateUser(types.User{
 		FirstName: payload.FirstName,
 		LastName:  payload.LastName,
