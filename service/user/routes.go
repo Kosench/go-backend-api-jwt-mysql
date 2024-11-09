@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 	"go-backend-api-jwt-mysql/service/auth"
 	"go-backend-api-jwt-mysql/types"
@@ -32,6 +33,12 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	var payload types.RegisterUserPayload
 	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
+	}
+	//validatethe payload
+	if err := utils.Validate.Struct(payload); err != nil {
+		errors := err.(validator.ValidationErrors)
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid payload %v", errors))
+		return
 	}
 	//check if the user exists
 	_, err := h.store.GetUserByEmail(payload.Email)
