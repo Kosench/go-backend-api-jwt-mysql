@@ -36,7 +36,7 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	//check if the user exists
 	_, err := h.store.GetUserByEmail(payload.Email)
 	if err == nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("user with email %s already exists"))
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("user with email %s already exists", payload.Email))
 		return
 	}
 	hashedPassword, err := auth.HashPassword(payload.Password)
