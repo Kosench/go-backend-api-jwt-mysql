@@ -1,6 +1,8 @@
 package types
 
-import "time"
+import (
+	"time"
+)
 
 type UserStore interface {
 	GetUserByEmail(email string) (*User, error)
