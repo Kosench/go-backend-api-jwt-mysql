@@ -27,8 +27,8 @@ migration:
 
 # Применение миграций (up)
 migrate-up:
-	@go run cmd/migrate/main.go up -path $(MIGRATION_DIR)
+	@go run cmd/migrate/main.go up
 
 # Откат миграций (down)
 migrate-down:
-	@go run cmd/migrate/main.go down -path $(MIGRATION_DIR)
+	@go run cmd/migrate/main.go down
