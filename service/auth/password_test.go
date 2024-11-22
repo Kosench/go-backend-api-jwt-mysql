@@ -23,10 +23,10 @@ func TestComparePasswords(t *testing.T) {
 		t.Errorf("error hashing password: %v", err)
 	}
 
-	if !ComparePasswords(hash, []byte("password")) {
+	if !ComparePassword(hash, []byte("password")) {
 		t.Errorf("expected password to match hash")
 	}
-	if ComparePasswords(hash, []byte("notpassword")) {
+	if ComparePassword(hash, []byte("notpassword")) {
 		t.Errorf("expected password to not match hash")
 	}
 }

@@ -44,7 +44,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !auth.ComparePasswords(u.Password, []byte(payload.Password)) {
+	if !auth.ComparePassword(u.Password, []byte(payload.Password)) {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid email or passwoed"))
 		return
 	}
