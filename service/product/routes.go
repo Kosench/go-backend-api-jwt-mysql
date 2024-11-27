@@ -19,8 +19,8 @@ func NewHandler(store types.ProductStore) *Handler {
 }
 
 func (h *Handler) RegisterStore(router *mux.Router) {
-	router.HandleFunc("/products", h.handleCreateProduct).Methods(http.MethodGet)
-	router.HandleFunc("/products", h.handleCreateProduct).Methods(http.MethodPost)
+	router.HandleFunc("/products", h.handleGetProducts).Methods(http.MethodGet)
+	router.HandleFunc("/products/{productID}", h.handleGetProduct).Methods(http.MethodGet)
 
 }
 
@@ -33,7 +33,7 @@ func (h *Handler) handleCreateProduct(w http.ResponseWriter, r *http.Request) {
 	utils.WriteJSON(w, http.StatusOK, ps)
 }
 
-func (h *Handler) HandleGetProducts(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) handleGetProducts(w http.ResponseWriter, r *http.Request) {
 	products, err := h.store.GetProducts()
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
