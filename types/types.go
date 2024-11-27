@@ -12,6 +12,10 @@ type UserStore interface {
 
 type ProductStore interface {
 	GetProduct() ([]Product, error)
+	GetProductByID(id int) (*Product, error)
+	GetProductsByID(id int) ([]Product, error)
+	CreateProduct(CreateProductPayload) error
+	UpdateProduct(Product)
 }
 
 type Product struct {
@@ -22,6 +26,14 @@ type Product struct {
 	Price       float64   `json:"price"`
 	Quantity    int       `json:"quantity"`
 	CreateAt    time.Time `json:"createAt"`
+}
+
+type CreateProductPayload struct {
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Image       string  `json:"image"`
+	Price       float64 `json:"price"`
+	Quantity    int     `json:"quantity"`
 }
 
 type User struct {
