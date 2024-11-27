@@ -45,7 +45,7 @@ func (h *Handler) handleGetProducts(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) handleGetProduct(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	str, ok := vars["product[id]"]
+	str, ok := vars["productID"]
 	if !ok {
 		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("missing product ID"))
 		return
