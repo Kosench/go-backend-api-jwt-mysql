@@ -20,6 +20,7 @@ func (s *Store) GetProductByID(productID int) (*types.Product, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	p := new(types.Product)
 	for rows.Next() {
@@ -46,6 +47,7 @@ func (s *Store) GetProductsByID(productIDs []int) ([]types.Product, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	products := []types.Product{}
 	for rows.Next() {
@@ -66,6 +68,7 @@ func (s *Store) GetProducts() ([]*types.Product, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	products := make([]*types.Product, 0)
 	for rows.Next() {
