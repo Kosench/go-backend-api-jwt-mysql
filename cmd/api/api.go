@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"github.com/gorilla/mux"
+	"go-backend-api-jwt-mysql/service/product"
 	"go-backend-api-jwt-mysql/service/user"
 	"log"
 	"net/http"
@@ -26,6 +27,10 @@ func (s *APIServer) Run() error {
 	userStore := user.NewStore(s.db)
 	userHandler := user.NewHandler(userStore)
 	userHandler.RegisterRoutes(subrouter)
+
+	productStore := product.NewStore(s.db)
+	productHandler := product.NewHandler(productStore)
+	productHandler.RegisterStore(subrouter)
 
 	log.Println("Listening on: ", s.addr)
 	return http.ListenAndServe(s.addr, router)
