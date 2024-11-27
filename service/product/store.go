@@ -75,6 +75,24 @@ func (s *Store) GetProductsByID(productIDs []int) ([]types.Product, error) {
 	return products, nil
 }
 
+func (s *Store) CreateProduct(product types.CreateProductPayload) error {
+	_, err := s.db.Exec("INSERT INTO ecom.products (name, description, image, price, quantity) VALUES (?,?,?,?,?)",
+		product.Name, product.Price, product.Image, product.Description, product.Quantity)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s Store) UpdateProduct(product types.Product) error {
+	_, err := s.db.Exec("UPDATE ecom.products SET name = ?, price = ?, image = ?, description = ?, quantity = ? WHERE id = ?", product.Name, product.Price, product.Image, product.Description, product.Quantity, product.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func scanRowsIntoProduct(rows *sql.Rows) (*types.Product, error) {
 	product := new(types.Product)
 
