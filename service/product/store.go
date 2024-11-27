@@ -32,6 +32,22 @@ func (s *Store) GetProduct() ([]types.Product, error) {
 	return products, nil
 }
 
+func (s *Store) GetProductByID(productID int) (*types.Product, error) {
+	rows, err := s.db.Query("SELECT * FROM ecom.products WHERE id = ?", productID)
+	if err != nil {
+		return nil, err
+	}
+
+	p := new(types.Product)
+	for rows.Next() {
+		p, err = scanRowsIntoProduct(rows)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return p, nil
+}
+
 func scanRowsIntoProduct(rows *sql.Rows) (*types.Product, error) {
 	product := new(types.Product)
 
