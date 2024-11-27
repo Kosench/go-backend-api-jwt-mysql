@@ -11,11 +11,11 @@ type UserStore interface {
 }
 
 type ProductStore interface {
-	GetProduct() ([]Product, error)
 	GetProductByID(id int) (*Product, error)
-	GetProductsByID(id int) ([]Product, error)
+	GetProductsByID(ids []int) ([]Product, error)
+	GetProducts() ([]*Product, error)
 	CreateProduct(CreateProductPayload) error
-	UpdateProduct(Product)
+	UpdateProduct(Product) error
 }
 
 type Product struct {
@@ -25,7 +25,7 @@ type Product struct {
 	Image       string    `json:"image"`
 	Price       float64   `json:"price"`
 	Quantity    int       `json:"quantity"`
-	CreateAt    time.Time `json:"createAt"`
+	CreatedAt   time.Time `json:"createAt"`
 }
 
 type CreateProductPayload struct {
