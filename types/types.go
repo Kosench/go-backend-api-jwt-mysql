@@ -33,7 +33,7 @@ type Product struct {
 	CreatedAt   time.Time `json:"createAt"`
 }
 
-type CartCheckoutIyem struct {
+type CartCheckoutItem struct {
 	ProductID int `json:"productID"`
 	Quantity  int `json:"quantity"`
 }
@@ -83,4 +83,8 @@ type RegisterUserPayload struct {
 type LoginUserPayload struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
+}
+
+type CartCheckoutPayload struct {
+	Items []CartCheckoutItem `json:"items" validate:"required"`
 }
