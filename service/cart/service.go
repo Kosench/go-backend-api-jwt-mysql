@@ -17,20 +17,47 @@ func getCartItemsIDs(item []types.CartCheckoutItem) ([]int, error) {
 }
 
 func (h *Handler) createOrder(ps []types.Product, items []types.CartCheckoutItem, userID int) (int, float64, error) {
-	productMap := make(map[int]types.Product)
+	productsMap := make(map[int]types.Product)
 	for _, product := range ps {
-		productMap[product.ID] = product
+		productsMap[product.ID] = product
 	}
 	// check if all products are actually in stack
-	if err := checkIfCartIsInStock(items, productMap); err != nil {
+	if err := checkIfCartIsInStock(items, productsMap); err != nil {
 		return 0, 0, err
 	}
 	//calculate total price
-	totalPrice := calculateTotalPrice(items, productMap)
+	totalPrice := calculateTotalPrice(items, productsMap)
 	//reduce quantity of products in our db
+	for _, item := range items {
+		product := productsMap[item.ProductID]
+		product.Quantity -= item.Quantity
+
+		err := h.productStore.UpdateProduct(product)
+		if err != nil {
+			return 0, 0, err
+		}
+	}
+
 	//create the order
+	orderID, err := h.store.CreateOrder(types.Order{
+		UserID:  userID,
+		Total:   totalPrice,
+		Status:  "pending",
+		Address: "soem addres",
+	})
+	if err != nil {
+		return 0, 0, err
+	}
 	//create order items
-	return 0, 0, nil
+	for _, item := range items {
+		h.orderStore.CreateOrderItem(types.OrderItem{
+			OrderID:   orderID,
+			ProductID: item.ProductID,
+			Quantity:  item.Quantity,
+			Price:     productsMap[item.ProductID].Price,
+		})
+	}
+	return 0, totalPrice, nil
 }
 
 func checkIfCartIsInStock(cartItems []types.CartCheckoutItem, products map[int]types.Product) error {
