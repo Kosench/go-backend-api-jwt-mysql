@@ -50,3 +50,14 @@ func checkIfCartIsInStock(cartItems []types.CartCheckoutItem, products map[int]t
 	}
 	return nil
 }
+
+func calculateTotalPrice(cartItems []types.CartCheckoutItem, products map[int]types.Product) float64 {
+	var total float64
+
+	for _, item := range cartItems {
+		product := products[item.ProductID]
+		total += product.Price * float64(item.Quantity)
+	}
+
+	return total
+}
