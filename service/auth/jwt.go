@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"go-backend-api-jwt-mysql/config"
@@ -11,6 +12,10 @@ import (
 	"strconv"
 	"time"
 )
+
+type contextKey string
+
+const UserKey contextKey = "userID"
 
 func CreateJWT(secret []byte, userID int) (string, error) {
 	expiration := time.Second * time.Duration(config.Envs.JWTExpirationInSeconds)
@@ -36,10 +41,34 @@ func WithJWTAuth(handleFunc http.HandlerFunc, store types.UserStore) http.Handle
 		token, err := validateJWT(tokenString)
 		if err != nil {
 			log.Printf("failed to validate token %v ", err)
+			permissionDenied(w)
+			return
+		}
+
+		if !token.Valid {
+			log.Println("invalid token")
+			permissionDenied(w)
 			return
 		}
 		// if is we need to fetch the userID from DB (from the token)
+		claims := token.Claims.(jwt.MapClaims)
+		str := claims["userID"].(string)
+
+		userID, err := strconv.Atoi(str)
+
+		u, err := store.GetUserByID(userID)
+		if err != nil {
+			log.Printf("failed to get user by id %v", err)
+			permissionDenied(w)
+			return
+		}
+
 		//set context user_ID to the user
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, UserKey, u.ID)
+		r = r.WithContext(ctx)
+
+		handleFunc(w, r)
 	}
 }
 
