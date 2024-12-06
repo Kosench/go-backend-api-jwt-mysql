@@ -5,6 +5,8 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"go-backend-api-jwt-mysql/config"
 	"go-backend-api-jwt-mysql/types"
+	"go-backend-api-jwt-mysql/utils"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -31,6 +33,11 @@ func WithJWTAuth(handleFunc http.HandlerFunc, store types.UserStore) http.Handle
 		tokenString := getTokenFromRequest(r)
 
 		// validate the JWT
+		token, err := validateJWT(tokenString)
+		if err != nil {
+			log.Printf("failed to validate token %v ", err)
+			return
+		}
 		// if is we need to fetch the userID from DB (from the token)
 		//set context user_ID to the user
 	}
@@ -54,4 +61,8 @@ func validateJWT(tokenString string) (*jwt.Token, error) {
 
 		return []byte(config.Envs.JWTSecret), nil
 	})
+}
+
+func permissionDenied(w http.ResponseWriter) {
+	utils.WriteError(w, http.StatusForbidden, fmt.Errorf("permissin denied"))
 }
