@@ -3,27 +3,32 @@ package cart
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"go-backend-api-jwt-mysql/service/auth"
 	"go-backend-api-jwt-mysql/types"
 	"go-backend-api-jwt-mysql/utils"
 	"net/http"
 )
 
 type Handler struct {
-	store        types.OrderStore
-	orderStore   types.OrderStore
-	productStore types.ProductStore
+	store      types.ProductStore
+	orderStore types.OrderStore
+	userStore  types.UserStore
 }
 
-func NewHandler(store types.OrderStore, orderStore types.OrderStore, productStore types.ProductStore) *Handler {
+func NewHandler(
+	store types.ProductStore,
+	orderStore types.OrderStore,
+	userStore types.UserStore,
+) *Handler {
 	return &Handler{
-		store:        store,
-		orderStore:   orderStore,
-		productStore: productStore,
+		store:      store,
+		orderStore: orderStore,
+		userStore:  userStore,
 	}
 }
 
 func (h Handler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/cart/checkout", h.handleCheckout).Methods(http.MethodPost)
+	router.HandleFunc("/cart/checkout", auth.WithJWTAuth(h.handleCheckout, h.userStore)).Methods(http.MethodPost)
 }
 
 func (h Handler) handleCheckout(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +50,7 @@ func (h Handler) handleCheckout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ps, err := h.productStore.GetProductsByID(productIDs)
+	ps, err := h.store.GetProductsByID(productIDs)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
