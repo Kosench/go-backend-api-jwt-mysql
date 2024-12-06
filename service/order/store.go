@@ -6,10 +6,10 @@ import (
 )
 
 type Store struct {
-	db sql.DB
+	db *sql.DB
 }
 
-func NewStore(db sql.DB) *Store {
+func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
